@@ -6,6 +6,7 @@ public class Enemy : MonoBehaviour
 {
 	[SerializeField] float maxHp;
 	[HideInInspector] public float hp;
+	[SerializeField] GameObject arrows;
 
 	private void Start()
 	{
@@ -24,6 +25,7 @@ public class Enemy : MonoBehaviour
 
 	void Die()
 	{
+		Instantiate(arrows, transform.position, transform.rotation);
 		Destroy(gameObject);
 	}
 

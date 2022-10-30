@@ -25,9 +25,13 @@ public class Zombie : MonoBehaviour
 
 	private void Update()
 	{
-		if (isPlayerinAttackRange() && lastAttack + attackInterval < Time.time)
+		if (isPlayerinAttackRange())
 		{
-			Attack();
+			Patrol();
+			if (lastAttack + attackInterval < Time.time)
+			{
+				Attack();
+			}
 		}
 
 		if (isPlayerinSight())
@@ -43,10 +47,7 @@ public class Zombie : MonoBehaviour
 
 
 	}
-	private void OnDrawGizmos()
-	{
-		Gizmos.DrawSphere(transform.position, detectRadius);
-	}
+
 
 
 	bool isPlayerinSight()

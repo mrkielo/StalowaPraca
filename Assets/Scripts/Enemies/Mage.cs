@@ -53,10 +53,6 @@ public class Mage : MonoBehaviour
 
 
 	}
-	private void OnDrawGizmos()
-	{
-		Gizmos.DrawSphere(transform.position, detectRadius);
-	}
 
 
 	bool isPlayerinSight()

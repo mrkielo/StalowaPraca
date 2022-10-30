@@ -2,22 +2,34 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using Cinemachine;
 
 public class Player : MonoBehaviour
 {
+	[SerializeField] CinemachineTargetGroup camtarget;
 	[SerializeField] float maxHp;
 	[SerializeField] float maxStamina;
 	[SerializeField] public float dmg;
 	[HideInInspector] public float hp;
 	[HideInInspector] public float stamina;
 	[SerializeField] public float ammo;
+	[SerializeField] float iceTime;
+	[SerializeField] float iceDps;
+	float ice;
+
 	[Header("UI")]
-	[SerializeField] Text hpText;
-	[SerializeField] Text staminaText;
+	[SerializeField] Image hpBar;
 	[SerializeField] Text ammoText;
+	[SerializeField] Image iceBar;
+
+	public bool bonfire = false;
+
+	float lastIce;
 
 	void Start()
 	{
+		ice = iceTime;
 		hp = maxHp;
 		stamina = maxStamina;
 		UpdateHud();
@@ -25,14 +37,34 @@ public class Player : MonoBehaviour
 
 	void Update()
 	{
+		Ice();
 
+		if (hp <= 0) SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+	}
+
+	void OnTriggerEnter2D(Collider2D other)
+	{
+		Debug.Log("TrrigerEnter");
+		if (other.gameObject.tag == "Cam")
+		{
+			Debug.Log("if enter");
+			camtarget.AddMember(other.gameObject.transform, 1, 1);
+		}
+	}
+
+	void OnTriggerExit2D(Collider2D other)
+	{
+		if (other.gameObject.tag == "Cam")
+		{
+			camtarget.RemoveMember(other.gameObject.transform);
+		}
 	}
 
 	public void UpdateHud()
 	{
-		hpText.text = hp.ToString();
-		staminaText.text = stamina.ToString();
+		hpBar.fillAmount = hp / maxHp;
 		ammoText.text = ammo.ToString();
+		iceBar.fillAmount = (iceTime - ice) / iceTime;
 	}
 
 
@@ -41,4 +73,46 @@ public class Player : MonoBehaviour
 		hp -= damage;
 		UpdateHud();
 	}
+
+	void Ice()
+	{
+		if (lastIce + 0.25 < Time.time)
+		{
+			UpdateHud();
+			if (BonfireCheck() && hp < maxHp)
+			{
+				hp += 0.5f;
+			}
+
+			if (BonfireCheck() && ice < iceTime)
+			{
+				ice += 0.5f;
+
+			}
+			else
+			{
+				if (ice > 0)
+				{
+					ice -= 0.25f;
+				}
+				else
+				{
+					hp -= iceDps / 4;
+				}
+			}
+			lastIce = Time.time;
+
+		}
+	}
+
+	bool BonfireCheck()
+	{
+		return Physics2D.OverlapCircle(transform.position, 3, LayerMask.GetMask("Bonfire"));
+	}
+
 }
+
+
+
+
+
