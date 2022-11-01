@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-	[SerializeField] float maxHp;
+	[SerializeField] public float maxHp;
 	[HideInInspector] public float hp;
 	[SerializeField] GameObject arrows;
 

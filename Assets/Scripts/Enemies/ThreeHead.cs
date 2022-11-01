@@ -15,21 +15,26 @@ public class ThreeHead : MonoBehaviour
 	[SerializeField] Image ammoBar;
 	[SerializeField] Transform[] firepoints;
 	[SerializeField] Collider2D trigger;
+	[SerializeField] GameObject mobSpawner;
 	bool start = false;
 	bool canShoot = true;
 
 	float lastAttack;
+	Enemy enemy;
 
 	private void Start()
 	{
 		player = FindObjectOfType<Player>();
 		if (player == null) Debug.Log("Gracza nie ma");
 		lastAttack = Time.time;
+		enemy = GetComponent<Enemy>();
+		if (enemy == null) Debug.Log("null");
 	}
 
 
 	void Update()
 	{
+		hpBar.fillAmount = enemy.hp / enemy.maxHp;
 
 		if (trigger.IsTouchingLayers(LayerMask.GetMask("Player")))
 		{
@@ -38,6 +43,7 @@ public class ThreeHead : MonoBehaviour
 		if (ammoBar.fillAmount == 0)
 		{
 			canShoot = false;
+			mobSpawner.SetActive(true);
 			StartCoroutine(Fill());
 		}
 
@@ -45,6 +51,7 @@ public class ThreeHead : MonoBehaviour
 		{
 			if (lastAttack + attackInterval < Time.time && canShoot)
 			{
+				mobSpawner.SetActive(false);
 				Attack(firepoints[Random.Range(0, 3)]);
 			}
 
@@ -67,7 +74,7 @@ public class ThreeHead : MonoBehaviour
 	void Attack(Transform firepoint)
 	{
 		//shooot
-		Vector2 shootDir = (player.transform.position - transform.position).normalized;
+		Vector2 shootDir = (player.transform.position - firepoint.position).normalized;
 		Quaternion rot = Quaternion.Euler(0, 0, Mathf.Atan2(shootDir.y, shootDir.x) * Mathf.Rad2Deg);
 		GameObject fireBall = Instantiate(projectilePrefab, firepoint.position, rot);
 		fireBall.GetComponent<Rigidbody2D>().AddForce(shootDir * bulletSpeed);

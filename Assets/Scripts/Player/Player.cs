@@ -22,6 +22,14 @@ public class Player : MonoBehaviour
 	[SerializeField] Image hpBar;
 	[SerializeField] Text ammoText;
 	[SerializeField] Image iceBar;
+	[SerializeField] Image iceFilter;
+	[SerializeField] Image poisonImg;
+	[SerializeField] Image eyeImg;
+	[SerializeField] Image hitFilter;
+	[SerializeField] float hitFilterTime;
+
+	public bool eye = false;
+	public bool poison = false;
 
 	public bool bonfire = false;
 
@@ -38,8 +46,11 @@ public class Player : MonoBehaviour
 	void Update()
 	{
 		Ice();
+		ifWin();
 
-		if (hp <= 0) SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+		if (hp <= 0) SceneManager.LoadScene(3);
+		if (poison) poisonImg.enabled = true;
+		if (eye) eyeImg.enabled = true;
 	}
 
 	void OnTriggerEnter2D(Collider2D other)
@@ -70,6 +81,7 @@ public class Player : MonoBehaviour
 
 	public void TakeDamage(float damage)
 	{
+		StartCoroutine(HitFilter());
 		hp -= damage;
 		UpdateHud();
 	}
@@ -103,11 +115,36 @@ public class Player : MonoBehaviour
 			lastIce = Time.time;
 
 		}
+		if (ice > 0) iceFilter.enabled = false;
+		else iceFilter.enabled = true;
 	}
 
 	bool BonfireCheck()
 	{
 		return Physics2D.OverlapCircle(transform.position, 3, LayerMask.GetMask("Bonfire"));
+	}
+
+	void ifWin()
+	{
+		Debug.Log("ifwin");
+		Debug.Log(eye);
+		Debug.Log("poison" + poison);
+		if (poison && eye && Physics2D.OverlapCircle(transform.position, 3, LayerMask.GetMask("Cross")))
+		{
+			Win();
+		}
+	}
+
+	void Win()
+	{
+		SceneManager.LoadScene(2);
+	}
+
+	IEnumerator HitFilter()
+	{
+		hitFilter.enabled = true;
+		yield return new WaitForSeconds(hitFilterTime);
+		hitFilter.enabled = false;
 	}
 
 }

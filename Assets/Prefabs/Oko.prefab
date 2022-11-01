@@ -101,7 +101,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   detectRadius: 20
-  attackRadius: 2
+  attackRadius: 0.5
   dmg: 5
   mSpeed: 1400
   attackInterval: 1

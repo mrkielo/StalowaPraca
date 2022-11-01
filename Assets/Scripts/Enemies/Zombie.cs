@@ -34,7 +34,7 @@ public class Zombie : MonoBehaviour
 			}
 		}
 
-		if (isPlayerinSight())
+		if (isPlayerinSight() && !isPlayerinAttackRange())
 		{
 			//kill him
 			ChasePlayer();
