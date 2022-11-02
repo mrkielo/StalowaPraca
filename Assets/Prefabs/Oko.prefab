@@ -156,7 +156,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHp: 1
   hp: 0
-  arrows: {fileID: 7666800877650808677, guid: 444364fffaf7d404eac8da564e887b9b, type: 3}
+  drop:
+  - {fileID: 7666800877650808677, guid: 444364fffaf7d404eac8da564e887b9b, type: 3}
 --- !u!114 &8358095795848055412
 MonoBehaviour:
   m_ObjectHideFlags: 0

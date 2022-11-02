@@ -5,28 +5,23 @@ using UnityEngine;
 public class Laser : MonoBehaviour
 {
 	public float dmg;
-	bool playerIn = false;
 	float lastHit;
 	Player p;
 	[SerializeField] Transform startPoint;
-	[SerializeField] Transform parent;
 	void Start()
 	{
 		p = FindObjectOfType<Player>();
 	}
 
-	private void Update()
+	private void OnTriggerStay2D(Collider2D other)
 	{
-
-		Vector2 dir = new Vector2(Mathf.Tan(parent.rotation.eulerAngles.z), 1).normalized;
-		playerIn = Physics2D.Raycast(startPoint.position, dir, transform.lossyScale.x, LayerMask.GetMask("Player"));
-		Debug.DrawRay(parent.position, dir * 100, Color.black);
-		if (playerIn && lastHit + 0.5f < Time.time)
+		if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
 		{
-			p.TakeDamage(dmg / 2);
-			lastHit = Time.time;
+			if (lastHit + 0.1f < Time.time)
+			{
+				p.TakeDamage(dmg / 10);
+				lastHit = Time.time;
+			}
 		}
 	}
-
-
 }

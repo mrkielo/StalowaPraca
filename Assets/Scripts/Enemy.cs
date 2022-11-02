@@ -6,7 +6,7 @@ public class Enemy : MonoBehaviour
 {
 	[SerializeField] public float maxHp;
 	[HideInInspector] public float hp;
-	[SerializeField] GameObject arrows;
+	[SerializeField] GameObject[] drop;
 
 	private void Start()
 	{
@@ -25,7 +25,7 @@ public class Enemy : MonoBehaviour
 
 	void Die()
 	{
-		Instantiate(arrows, transform.position, transform.rotation);
+		if (drop != null) Instantiate(drop[Random.Range(0, drop.Length - 1)], transform.position, transform.rotation);
 		Destroy(gameObject);
 	}
 

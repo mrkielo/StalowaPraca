@@ -33,8 +33,8 @@ public class Sauron : MonoBehaviour
 
 	IEnumerator Rot()
 	{
-		angle += 0.1f;
-		yield return new WaitForSeconds(0.25f);
+		angle += 0.2f;
+		yield return new WaitForSeconds(0.05f);
 	}
 
 

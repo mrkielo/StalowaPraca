@@ -12,11 +12,20 @@ public class PlayerShooting : MonoBehaviour
 	[SerializeField] public Transform bow;
 	[SerializeField] Animator bowAnimator;
 	[SerializeField] float shootDelay;
+	[Header("Sword")]
+	[SerializeField] float meeleDelay;
+	[SerializeField] float swordDmg;
+	[SerializeField] SpriteRenderer swordSprite;
+	[SerializeField] Transform meeleBoxOrigin;
+	[SerializeField] Vector2 meeleBoxSize;
+	[SerializeField] Animator swordAnimator;
+	float lastSword;
 	float lastShoot;
 	void Start()
 	{
 		player = GetComponent<Player>();
 		lastShoot = Time.time;
+		lastSword = Time.time;
 	}
 
 	// Update is called once per frame
@@ -29,12 +38,23 @@ public class PlayerShooting : MonoBehaviour
 		bow.rotation = rot;
 
 		//shoot
-
+		if (Input.GetKeyDown(KeyCode.Mouse1) && lastSword + meeleDelay < Time.time)
+		{
+			swordSprite.enabled = true;
+			bowAnimator.GetComponent<SpriteRenderer>().enabled = false;
+			SwordAttack();
+		}
 
 		if (Input.GetKeyDown(KeyCode.Mouse0) && lastShoot + shootDelay < Time.time && player.ammo > 0)
 		{
+			swordSprite.enabled = false;
+			bowAnimator.GetComponent<SpriteRenderer>().enabled = true;
 			StartCoroutine(Shoot());
 		}
+	}
+	private void OnDrawGizmos()
+	{
+		Gizmos.DrawCube(meeleBoxOrigin.position, new Vector3(meeleBoxSize.x, meeleBoxSize.y, 1));
 	}
 
 	IEnumerator Shoot()
@@ -48,5 +68,17 @@ public class PlayerShooting : MonoBehaviour
 		player.ammo--;
 		player.UpdateHud();
 		lastShoot = Time.time;
+	}
+
+	void SwordAttack()
+	{
+		swordAnimator.SetTrigger("Attack");
+		Collider2D enemy = Physics2D.OverlapBox(meeleBoxOrigin.position, meeleBoxSize, 0, LayerMask.GetMask("Enemy"));
+		if (enemy != null)
+		{
+			Debug.Log(enemy.name);
+			enemy.GetComponent<Enemy>().TakeDamage(swordDmg);
+		}
+		lastSword = Time.time;
 	}
 }

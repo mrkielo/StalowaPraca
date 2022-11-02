@@ -21,7 +21,6 @@ public class PlayerNavi : MonoBehaviour
 		}
 		else
 		{
-
 			Vector2 dir = transform.position - bonfire.transform.position;
 			float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
 			if (angle > -22.5 && angle < 22.5) Switcher(0);

@@ -7,6 +7,7 @@ public class Mage : MonoBehaviour
 
 	Player player;
 	Rigidbody2D rb;
+	EnemyMovement movement;
 
 	//stats
 	[SerializeField] float detectRadius;
@@ -22,6 +23,7 @@ public class Mage : MonoBehaviour
 
 	private void Start()
 	{
+		movement = GetComponent<EnemyMovement>();
 		rb = GetComponent<Rigidbody2D>();
 		player = FindObjectOfType<Player>();
 		if (player == null) Debug.Log("Gracza nie ma");
@@ -29,31 +31,31 @@ public class Mage : MonoBehaviour
 
 	private void Update()
 	{
-		if (isPlayerinAttackRange() && !isPlayerTooClose())
-		{
-			Stop();
-			if (lastAttack + attackInterval < Time.time) Attack();
-		}
 
-		if (isPlayerTooClose())
+		if (isPlayerinSight())
 		{
-			Escape();
+			if (isPlayerinAttackRange())
+			{
+				if (isPlayerTooClose())
+				{
+					movement.Escape(player.transform.position, mSpeed * 1.5f);
+				}
+				else
+				{
+					StartCoroutine(movement.Turn(player.transform.position));
+					Attack();
+				}
+			}
+			else
+			{
+				movement.Chase(player.transform.position, mSpeed);
+			}
 		}
-
-		if (isPlayerinSight() && !isPlayerinAttackRange())
+		else
 		{
-			//kill him
-			ChasePlayer();
+			movement.Patrol(player.transform.position, mSpeed / 2);
 		}
-		if (!isPlayerinSight())
-		{
-			//idk znik
-			Patrol();
-		}
-
-
 	}
-
 
 	bool isPlayerinSight()
 	{
@@ -79,40 +81,19 @@ public class Mage : MonoBehaviour
 			return false;
 	}
 
-	void ChasePlayer()
-	{
-
-		rb.velocity = (player.transform.position - transform.position).normalized * mSpeed * Time.deltaTime;
-	}
-
-	void Escape()
-	{
-		Debug.Log("IM ESCAPINGGG");
-		rb.velocity = (transform.position - player.transform.position).normalized * 2 * mSpeed * Time.deltaTime;
-
-	}
-
-	void Patrol()
-	{
-		rb.velocity = Vector2.zero;
-	}
-
-	void Stop()
-	{
-		rb.velocity = Vector2.zero;
-	}
-
 	void Attack()
 	{
-		//shooot
-		Vector2 shootDir = (player.transform.position - transform.position).normalized;
-		Quaternion rot = Quaternion.Euler(0, 0, Mathf.Atan2(shootDir.y, shootDir.x) * Mathf.Rad2Deg);
-		GameObject fireBall = Instantiate(projectilePrefab, transform.position, rot);
-		fireBall.GetComponent<Rigidbody2D>().AddForce(shootDir * bulletSpeed);
-		fireBall.GetComponent<EnemyFireball>().dmg = dmg;
-
-		lastAttack = Time.time;
+		if (lastAttack + attackInterval < Time.time)
+		{
+			//create fireball
+			Vector2 shootDir = (player.transform.position - transform.position).normalized;
+			Quaternion rot = Quaternion.Euler(0, 0, Mathf.Atan2(shootDir.y, shootDir.x) * Mathf.Rad2Deg);
+			GameObject fireBall = Instantiate(projectilePrefab, transform.position, rot);
+			//assign force and dmg
+			fireBall.GetComponent<Rigidbody2D>().AddForce(shootDir * bulletSpeed);
+			fireBall.GetComponent<EnemyFireball>().dmg = dmg;
+			//reset timer
+			lastAttack = Time.time;
+		}
 	}
-
-
 }

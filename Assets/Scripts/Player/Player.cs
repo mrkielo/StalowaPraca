@@ -53,12 +53,12 @@ public class Player : MonoBehaviour
 		if (eye) eyeImg.enabled = true;
 	}
 
+	//CAM Group
+
 	void OnTriggerEnter2D(Collider2D other)
 	{
-		Debug.Log("TrrigerEnter");
 		if (other.gameObject.tag == "Cam")
 		{
-			Debug.Log("if enter");
 			camtarget.AddMember(other.gameObject.transform, 1, 1);
 		}
 	}
@@ -126,9 +126,6 @@ public class Player : MonoBehaviour
 
 	void ifWin()
 	{
-		Debug.Log("ifwin");
-		Debug.Log(eye);
-		Debug.Log("poison" + poison);
 		if (poison && eye && Physics2D.OverlapCircle(transform.position, 3, LayerMask.GetMask("Cross")))
 		{
 			Win();

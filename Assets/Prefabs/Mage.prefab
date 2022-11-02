@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 5447152415556514967}
   - component: {fileID: 6106763007439458697}
   - component: {fileID: 253186212077713114}
+  - component: {fileID: 6371239369948108087}
   m_Layer: 3
   m_Name: Mage
   m_TagString: Untagged
@@ -139,7 +140,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHp: 2
   hp: 0
-  arrows: {fileID: 7666800877650808677, guid: 444364fffaf7d404eac8da564e887b9b, type: 3}
+  drop:
+  - {fileID: 7666800877650808677, guid: 444364fffaf7d404eac8da564e887b9b, type: 3}
 --- !u!114 &5447152415556514967
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -196,3 +198,15 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &6371239369948108087
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5447152415556514964}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 137ce2a40cee3e745bc1743578c71264, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
